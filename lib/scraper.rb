@@ -24,15 +24,29 @@ class Scraper
 
     student = []
 
-    doc.css("div.social-icon-container").each do |info|
-      student << {
-        :twitter => info.css("a").attribute("href").value,
-        :linkedin => info.css("a").attribute("href").value,
-        :github => info.css("a").attribute("href").value,
-        :blog => info.css("a").attribute("href").value,
-        :profile_quote => info.css("a").attribute("href").value,
-        :bio => info.css("a").attribute("href").value
-      }
+    links = doc.css("div.social-icon-container").children.css("a").collect { |x| x.attribute('href').value}
+
+    links.each do |link|
+      if link.include?("linkedin")
+        student[:linkedin] = link
+      elsif link.include?("twitter")
+        student[:twitter] = link 
+      elsif link.include?("github")
+        student[:github] = link 
+      else 
+        student[:blog] = link 
+      end
     end
+
+    student[:profile_quote] = doc.css("div.profile-quote").text
+    student[:bio] = doc.css("div.bio-content.content-holder div.description-holder p").text
   end
 end
+
+
+#  :twitter => info.css("a").attribute("href").value,
+#  :linkedin => info.css("a").attribute("href").value,
+#  :github => info.css("a").attribute("href").value,
+#  :blog => info.css("a").attribute("href").value,
+#  :profile_quote => info.css("a").attribute("href").value,
+#  :bio => info.css("a").attribute("href").value
